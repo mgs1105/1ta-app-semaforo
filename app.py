@@ -193,7 +193,7 @@ def crearunidadtrabajo():
 @app.route('/eliminarunidad/<int:id>')
 def eliminar_unidad(id):
     cursor.execute("SELECT * FROM unidadtrabajo WHERE id = {0}". format(id))
-    c = cursor.fetchall()
+    # c = cursor.fetchall()
     cursor.execute('DELETE FROM unidadtrabajo WHERE id = {0}'.format(id))
     midb.commit()
     flash('Unidad de trabajo eliminada con exito!')
