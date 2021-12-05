@@ -1,0 +1,64 @@
+{% extends 'base.html' %}
+
+{% block header %}
+<h1>{% block title %} Registro de unidades de trabajo {% endblock %}</h1>
+{% endblock %}
+
+{% block content %}
+
+{% with mensajes = get_flashed_messages() %}
+{% if mensajes %}
+{% for m in mensajes %}
+<p>{{m}}</p>
+{% endfor %}
+{% endif %}
+{% endwith %}
+
+<style>
+form{
+    margin-left: 600px;
+    margin-top: 20px;
+    margin-bottom: 15px;
+}
+table{
+    margin-left: 450px;
+}
+#btn-unidad{
+    background-color: #71A5DE;
+    color: white;
+}
+</style>
+
+
+<body onload="brython()">
+<h3>Unidad de trabajo</h3>
+<div class="col-md-12">
+    <form action="{{url_for('crearunidadtrabajo')}}" method="post">
+        <label for="nombre">Nombre</label>
+        <input name="nombre" id="nombre" required/>
+        <input type="submit" value="registrar" id="btn-unidad"/>
+    </form>
+</div>
+<div id="tabla-tareas" class="col-md-6">
+    <table class="table table-striped table-bordered bg-white table-ls">
+        <thead>
+            <tr>
+                <th>Unidades de trabajo</th>
+                <th>Eliminar</th>
+            </tr>    
+        </thead>
+        <tbody>
+            {% for unidad in data %}
+            <tr>
+                <td>{{ unidad.nombre }}</td>
+                <td> <a href="/eliminarunidad/{{unidad.id}}" class="btn btn-danger">Eliminar</a> </td>
+            </tr>    
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+</body>
+
+{% endblock %}
+

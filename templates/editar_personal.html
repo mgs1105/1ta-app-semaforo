@@ -1,0 +1,86 @@
+{% extends 'base-editar.html' %}
+
+<link rel="stylesheet" href="https://bootswatch.com/4/materia/bootstrap.min.css">
+<link href="styles/style.css" rel="stylesheet" type="text/css">
+{% block header %}
+<h1>{% block title %} {% endblock %}</h1>
+{% endblock %}
+
+{% block content %}
+
+<style>
+h1  {
+    text-align: center;
+    background-color: #143179;
+    color: white;
+    margin-top: 30px;
+    margin-left: 200px; 
+}
+form    {
+    content: center;
+    margin-bottom: 50px;
+    background-color: #71A5DE;
+    text-decoration: white;
+    text-align: center;
+}
+#navegacion {
+    background-color: #143179 ;
+
+}  
+#contenedor{
+    margin-top: 30px;
+    margin-bottom: 30xp;
+    margin-left: 250px;
+}
+#tribunal{
+    border-radius: 10px;
+    margin-left: 200px;
+    width: 80px;
+    height: 80px;
+
+}
+</style>
+
+    
+<div id="navegacion" class="d-flex justify-content-center py-3 primary-color">
+    <ul class="nav nav-pills">
+        <h1>Editar Personal</h1>
+    </ul>
+    <img src="https://pbs.twimg.com/profile_images/973914604211462146/vK1Beo4p_400x400.jpg" alt="" id="tribunal">
+</div>
+
+<body onload="brython()" id="bodi">
+    <div class="container" id="contenedor">
+        <div class="abs-center col-md-10">
+            <form action="/actualizaP/{{data.id}}" method="post" name="f1" class="border p-5 form">
+                <div class="form-group">
+                    <label for="nombre" style="color:black"> Nombre </label>
+                    <input name="nombre" id="nombre" value="{{data.nombre}}" class="form-control" style="color:black" readonly/>
+                </div>
+                <div class="form-group">
+                    <label for="apellido" style="color:black"> Apellido </label>
+                    <input name="apellido" id="apellido" value="{{data.apellido}}" class="form-control" style="color:black" readonly/>
+                </div>
+                <div class="form-group">
+                    <label for="rut" style="color:black"> Rut </label>
+                    <input name="rut" id="rut" value="{{data.rut}}" class="form-control" style="color:black" readonly/>
+                </div>
+                <div class="form-group" style="color:black">
+                    <label for="unidadtrabajo">Unidad de trabajo</label>
+                    <select name="unidadtrabajo"  class="form-control" style="color:black">
+                        {% for unidad in data2 %}
+                        <option value="{{unidad.nombre}}">{{ unidad.nombre }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <input type="submit" value="Editar"  id="btn" class="btn btn-primary"/>
+            </form>
+        </div>
+
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" 
+        integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
+    
+</body>
+
+
+{% endblock %}

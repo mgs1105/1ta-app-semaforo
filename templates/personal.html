@@ -1,0 +1,95 @@
+{% extends 'base.html' %}
+
+{% block header %}
+<h1>{% block title %} Personal {% endblock %}</h1>
+{% endblock %}
+
+{% block content %}
+
+{% with mensajes = get_flashed_messages() %}
+{% if mensajes %}
+{% for m in mensajes %}
+<p>{{m}}</p>
+{% endfor %}
+{% endif %}
+{% endwith %}
+
+<style>
+#carta{
+    margin-top: 20px;
+    margin-bottom: 20px;
+}
+select, #btn-personal{
+    padding-left: 10px;
+    padding-right: 10px;
+    padding-top: 1px;
+    padding-bottom: 1px;
+}
+#btn-personal{
+    margin-left: 10px;
+    background-color: #71A5DE;
+    color: white;
+}
+</style>
+
+<body onload="brython()">
+<div class="container">
+    <h3>Administrar personal</h3>
+        <div class="card card-body" id="carta">   
+            <form action="{{url_for('crearpersonal')}}" method="post">
+                <label for="nombre">Nombre</label>
+                <input name="nombre" id="nombre" required/>
+                <label for="apellido">Apellido</label>
+                <input name="apellido" id="apellido" required/>
+                <label for="rut">Rut</label>
+                <input name="rut" id="rut" placeholder="Sin puntos" maxlength="8" onkeypress='return validarNum(event)' required/> -
+                <input name="digito" id="digito" maxlength="1" width="1px" required placeholder="digito verificador"/> 
+                <label for="unidadtrabajo">Unidad de trabajo</label>
+                <select name="unidadtrabajo">
+                {% for unidad in data %}
+                    <option value="{{unidad.nombre}}">{{ unidad.nombre }}</option>
+                {% endfor %}
+                </select>
+                <input type="submit" value="registrar" id="btn-personal"/>
+            </form>
+        </div>
+        <div class="col-md-12">
+        <table class="table table-striped table-bordered bg-white table-sm">
+            <thead>
+                <tr>
+                    <th>Nombre</th>
+                    <th>Apellido</th>
+                    <th>Rut</th>
+                    <th>Unidad de trabajo</th>
+                    <th>Editar</th>
+                    <th>Eliminar</th>
+                </tr>    
+            </thead>
+            {% for personal in data2 %}
+            <tbody>
+                <tr>
+                    <td>{{ personal.nombre }}</td>
+                    <td>{{ personal.apellido }}</td>
+                    <td>{{ personal.rut }}</td>
+                    <td>{{ personal.unidadtrabajo }}</td>
+                    <td> <a href="/editarpersonal/{{personal.id}}" class="btn btn-primary">Editar</a> </td>
+                    <td> <a href="/eliminarpersonal/{{personal.id}}" class="btn btn-danger">Eliminar</a> </td>
+                </tr>    
+            </tbody>
+            {% endfor %}
+        </table>
+        </div>
+</div>
+</body>
+
+<script>
+function validarNum(event) {
+    if (event.charCode >= 48 && event.charCode <= 57){
+        return true;
+    } else {
+        return false;
+    }
+}
+</script>
+
+{% endblock %}
