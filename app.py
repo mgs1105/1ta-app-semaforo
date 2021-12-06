@@ -194,12 +194,26 @@ def crearunidadtrabajo():
 def eliminar_unidad(id):
     cursor.execute("SELECT * FROM unidadtrabajo WHERE id = {0}". format(id))
     c = cursor.fetchall()
-    cursor.execute('DELETE FROM unidadtrabajo WHERE id = {0}'.format(id))
-    midb.commit()
-    flash('Unidad de trabajo eliminada con exito!')
-    return redirect(url_for('crearunidadtrabajo'))
+    cursor.execute("Select * FROM personal")
+    p = cursor.fetchall()
 
+    for unidad in c:
+        unidadp = unidad['nombre']
 
+    i = 0
+
+    for personal in p:
+        if unidadp == personal['unidadtrabajo']:
+            i = 1
+
+    if i == 0:
+        cursor.execute('DELETE FROM unidadtrabajo WHERE id = {0}'.format(id))
+        midb.commit()
+        flash('Unidad de trabajo eliminada con exito!')
+        return redirect(url_for('crearunidadtrabajo'))
+    else:
+        flash('No se puede eliminar la unidad de trabajo, hay usuarios asociados a ella')
+        return redirect(url_for('crearunidadtrabajo'))
 
 
 

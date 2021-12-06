@@ -9,7 +9,10 @@
 {% with mensajes = get_flashed_messages() %}
 {% if mensajes %}
 {% for m in mensajes %}
-<p>{{m}}</p>
+<div class="alert alert-primary alert-dismissible fade show" role="alert">
+    <p> {{m}}</p>
+    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+  </div>
 {% endfor %}
 {% endif %}
 {% endwith %}
@@ -29,7 +32,7 @@ table{
 }
 </style>
 
-
+4
 <body onload="brython()">
 <h3>Unidad de trabajo</h3>
 <div class="col-md-12">
