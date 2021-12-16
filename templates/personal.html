@@ -39,21 +39,21 @@ select, #btn-personal{
 <div class="container">
     <h3>Administrar personal</h3>
         <div class="card card-body" id="carta">   
-            <form action="{{url_for('crearpersonal')}}" method="post">
+            <form action="{{url_for('crearpersonal')}}" method="post" id="per">
                 <label for="nombre">Nombre</label>
-                <input name="nombre" id="nombre" required/>
+                <input name="nombre" id="nombre" type="text" onkeypress='return verificar_nombre(event)' required/>
                 <label for="apellido">Apellido</label>
-                <input name="apellido" id="apellido" required/>
+                <input name="apellido" id="apellido" type="text" required/>
                 <label for="rut">Rut</label>
                 <input name="rut" id="rut" placeholder="Sin puntos" maxlength="8" onkeypress='return validarNum(event)' required/> -
-                <input name="digito" id="digito" maxlength="1" width="1px" required placeholder="digito verificador"/> 
+                <input type="text" name="digito" id="digito" maxlength="1" width="1px" placeholder="digito verificador" onkeypress='return verificar(event)' required/> 
                 <label for="unidadtrabajo">Unidad de trabajo</label>
                 <select name="unidadtrabajo">
                 {% for unidad in data %}
                     <option value="{{unidad.nombre}}">{{ unidad.nombre }}</option>
                 {% endfor %}
                 </select>
-                <input type="submit" value="registrar" id="btn-personal"/>
+                <input type="submit" value="registrar" id="btn-personal" onclick="verificar()"/>
             </form>
         </div>
         <div class="col-md-12">
@@ -92,6 +92,23 @@ function validarNum(event) {
     } else {
         return false;
     }
+}
+
+function verificar(event) {
+    if (event.charCode >= 48 && event.charCode <= 57 || event.charCode == 107){
+        return true;
+    } else {
+        return false;
+    }
+}
+
+function verificar_nombre(event) {
+    if (event.charCode >= 65 && event.charCode <= 90 || event.charCode >= 98 && event.charCode <= 122){
+        return true;
+    } else {
+        return false;
+    }
+
 }
 </script>
 

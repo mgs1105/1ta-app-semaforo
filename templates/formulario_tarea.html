@@ -71,7 +71,7 @@ form{
         </div>
         <div class="form-group">
             <label for="solicitante" style="color:black">solicitante</label>
-            <select name="solicitante" id="solicitante" class="form-control" style="color:black">
+            <select name="solicitante" id="solicitante" class="form-control" style="color:black" required>
                 <option value=""></option>
             </select>
         </div>
@@ -97,6 +97,7 @@ def on_post_complete(req):
         data = json.loads(req.responseText)
         i = 0
         personal = []
+        personal.append('Seleccione...')
         while i < len(data):
             personal.append(data[i]['nombre'] + ' ' + data[i]['apellido'])
             i += 1
@@ -111,7 +112,7 @@ def on_post_complete(req):
                 sel <= (html.OPTION(x, value="{{x}}"))
 
     else:
-        document["solicitante"].html = "error "+req.text
+        document['solicitante'].html = "error "+req.text
 
 def post(url):
     req = ajax.ajax()    
@@ -148,21 +149,24 @@ def registrar_tarea(url):
 
     encargado = document['encargado'].value
     
-    req.open('POST', url, True)
-    req.set_header('content-type', 'application/x-www-form-urlencoded')
-    req.send({
-        "titulo": titulo,
-        "detalle": detalle,
-        "fechaentrada": fechaentrada,
-        "estado": estado,
-        "unidadtrabajo": unidadtrabajo,
-        "solicitante": solicitante,
-        "encargado": encargado,
-    })
-    req.close()
-    req.bind('complete', complete_tarea)
-    req.close()
-    
+    if solicitante == 'Seleccione...':
+        req.close()
+    else:
+        req.open('POST', url, True)
+        req.set_header('content-type', 'application/x-www-form-urlencoded')
+        req.send({
+            "titulo": titulo,
+            "detalle": detalle,
+            "fechaentrada": fechaentrada,
+            "estado": estado,
+            "unidadtrabajo": unidadtrabajo,
+            "solicitante": solicitante,
+            "encargado": encargado,
+        })
+        req.close()
+        req.bind('complete', complete_tarea)
+        req.close()
+
 document['btn'].bind('click', lambda ev:registrar_tarea('/creartarea'))
 </script>
 

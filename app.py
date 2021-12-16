@@ -38,6 +38,8 @@ def index():
     return render_template('lista_tarea.html', data=tareas)
 
 
+
+
 #------------ TAREAS --------------------
 #------------AGREGAR --------------
 
@@ -49,13 +51,13 @@ def creartarea():
         cursor.execute("select * from unidadtrabajo")
         unidades = cursor.fetchall()
         mayor = 0
-
+ 
         for tarea in tareas:
             if mayor == 0:
                 mayor = tarea['id']
             else:
                 mayor = tarea['id'] if tarea['id'] > mayor else mayor
-        
+
         id = mayor + 1
         titulo = request.form.get('titulo', type=str)
         detalle = request.form.get('detalle', type=str)
@@ -63,16 +65,19 @@ def creartarea():
         estado = request.form.get('estado', type=str)
         observacion = ''
         unidadtrabajo = request.form.get('unidadtrabajo', type=str)
-        solicitante = request.form.get('solicitante', type=str)
+        solicitante = request.form['solicitante']
         encargado = request.form.get('encargado', type=str)
 
-        sql = "INSERT INTO tarea (id, titulo, detalle, fechaentrada, estado, observacion, unidadtrabajo, solicitante, encargado) values (%s,%s,%s,%s,%s,%s,%s,%s,%s)"
-        values = (id, titulo, detalle, fechaentrada, estado, observacion, unidadtrabajo, solicitante, encargado)
-        cursor.execute(sql,values)
-        midb.commit()
-        flash('Tarea creada con exito!')
-        return render_template('formulario_tarea.html', data=unidades)
-    
+        if solicitante == None or solicitante == '':
+            flash('Tarea creada con exito!')
+            return render_template('formulario_tarea.html', data=unidades)
+        else:
+            sql = "INSERT INTO tarea (id, titulo, detalle, fechaentrada, estado, observacion, unidadtrabajo, solicitante, encargado) values (%s,%s,%s,%s,%s,%s,%s,%s,%s)"
+            values = (id, titulo, detalle, fechaentrada, estado, observacion, unidadtrabajo, solicitante, encargado)
+            cursor.execute(sql,values)
+            midb.commit()
+            return render_template('formulario_tarea.html', data=unidades)
+
     elif request.method == 'GET':
         cursor.execute("select * from unidadtrabajo")
         unidades = cursor.fetchall()
@@ -217,6 +222,9 @@ def eliminar_unidad(id):
 
 
 
+
+
+
 #----------- PERSONAL --------------
 #----------- AGREGAR  --------------
 
@@ -241,16 +249,24 @@ def crearpersonal():
         cuerpo_rut = request.form['rut']
         unidadtrabajo = request.form['unidadtrabajo']
         digito = request.form['digito']
+        
+        i = 0
+        lista_digito = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'k', 'K']
+        for d in lista_digito:
+            if d == digito:
+                i += 1
 
-        rut = cuerpo_rut + '-' + digito
-
-        sql = "insert into personal (id, nombre, apellido, rut, unidadtrabajo) values (%s, %s, %s, %s, %s)"
-        values = (id, nombre, apellido, rut, unidadtrabajo)
-        cursor.execute(sql, values)
-        midb.commit()
-        flash('Personal agregado con exito!')
-        return redirect(url_for('crearpersonal'))
-        # render_template('personal.html', data2=lista_personal, data=unidades)
+        if i == 1:
+            rut = cuerpo_rut + '-' + digito
+            sql = "insert into personal (id, nombre, apellido, rut, unidadtrabajo) values (%s, %s, %s, %s, %s)"
+            values = (id, nombre, apellido, rut, unidadtrabajo)
+            cursor.execute(sql, values)
+            midb.commit()
+            flash('Personal agregado con exito!')
+            return redirect(url_for('crearpersonal'))
+        else:
+            flash('Digito verificador incorrecto')
+            return redirect(url_for('crearpersonal'))
 
     elif request.method == 'GET':
         cursor.execute('select * from unidadtrabajo')
@@ -291,6 +307,7 @@ def actualiza_personal(id):
         midb.commit()
     flash('Personal actualizado con exito!')
     return redirect(url_for('crearpersonal'))
+
 
 
 
