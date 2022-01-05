@@ -23,73 +23,83 @@
     padding-bottom: 30px;
 }
 #opciones{
-    padding-right: 15px;
-    padding-left: 15px;
-    padding-top: 1px;
-    padding-bottom: 1px;
+    padding: 1px 15px;
 }
-input{
-    margin-left: 10px;
-    padding-left: 30px;
-    padding-right: 30px;
-}
-table{
-    margin-left: 50px;
+#tabla-tareas{
+    margin-left: auto;
+    margin-right: auto;
+    min-height: .01%;
+    overflow-x: auto;
+    width: 100%;
 }
 #btn{
-    background-color: #71A5DE;
+    background-color: #2D219B;
     color: white;
+    border-radius: 5px;
+    margin-left: 10px;
+    padding: 0 20px;
+}
+
+@media (max-width: 1350px) {
+    #tabla-tareas{
+        width: 100%;
+        margin-bottom: 15px;
+        overflow-y: hidden;
+        -ms-overflow-style: -ms-autohiding-scrollbar;
+    }
 }
 </style>
-
-<div class="row-12">
+<body>
     <h3>Lista de tareas</h3>
-    <form action="/filtrar" method="post" id="filtrar-estado">
-    <select name="estado" id="opciones" >
-        <option value="total">Total de tareas</option>
-        <option value="completa">Tareas completas</option>
-        <option value="incompleta">Tareas incompletas</option>
-        <option value="en desarrollo">Tareas en desarrollo</option>
-        <option value="ingresada">Tareas ingresadas</option>
-    </select>
-    <input type="submit" value="filtrar" id="btn">
-    </form>
-</div>
+    <div class="container">
+        <form action="/filtrar" method="post" id="filtrar-estado">
+            <select name="estado" id="opciones" >
+                <option value="total">Total de tareas</option>
+                <option value="completa">Tareas completas</option>
+                <option value="incompleta">Tareas incompletas</option>
+                <option value="en desarrollo">Tareas en desarrollo</option>
+                <option value="ingresada">Tareas ingresadas</option>
+            </select>
+            <input type="submit" value="filtrar" id="btn">
+        </form>
+    </div>
 
-<div id="tabla-tareas" class="col-md-11">
-<table class="table table-striped table-bordered bg-white table-md">
-    <thead class="thead-primary">
-        <tr class="thead-primary">
-            <th class="">Titulo</th>
-            <th class="">Detalle</th>
-            <th class="">Fecha de entrada</th>
-            <th class="">Fecha de termino</th>
-            <th class="">Estado</th>
-            <th class="">Observacion</th>
-            <th class="">Unidad de trabajo</th>
-            <th class="">Solicitante</th>
-            <th class="">Encargado</th>
-            <th class="">Actualizar</th>
-            <th class="">Eliminar</th>
-        </tr>
-    </thead>
-    <tbody>
-        {% for tarea in data %}
-        <tr>
-            <td>{{ tarea.titulo }}</td>
-            <td>{{ tarea.detalle }}</td>
-            <td>{{ tarea.fechaentrada }}</td>
-            <td> {{ tarea.fechasalida }}</td>
-            <td>{{ tarea.estado }}</td>
-            <td>{{ tarea.observacion }}</td>
-            <td>{{ tarea.unidadtrabajo }}</td>
-            <td>{{ tarea.solicitante }}</td>
-            <td>{{ tarea.encargado }}</td>
-            <td> <a href="/editartarea/{{tarea.id}}" class="btn btn-primary">Editar</a> </td>
-            <td><a href="/eliminartarea/{{tarea.id}}" class="btn btn-danger">Eliminar</a> </td>
-        </tr>
-        {% endfor %}
-    </tbody>
-</table>
-</div>
+    <div id="tabla-tareas" class="container">
+        <table class="table table-striped table-bordered bg-white table-sm">
+            <thead class="thead-primary">
+                <tr class="thead-primary">
+                    <th class="">Titulo</th>
+                    <th class="">Detalle</th>
+                    <th class="">Fecha de entrada</th>
+                    <th class="">Fecha de termino</th>
+                    <th class="">Estado</th>
+                    <th class="">Observacion</th>
+                    <th class="">Unidad de trabajo</th>
+                    <th class="">Solicitante</th>
+                    <th class="">Encargado</th>
+                    <th class="">Actualizar</th>
+                    <th class="">Eliminar</th>
+                </tr>
+            </thead>
+            <tbody>
+            {% for tarea in data %}
+                <tr>
+                    <td>{{ tarea.titulo }}</td>
+                    <td>{{ tarea.detalle }}</td>
+                    <td>{{ tarea.fechaentrada }}</td>
+                    <td> {{ tarea.fechasalida }}</td>
+                    <td>{{ tarea.estado }}</td>
+                    <td>{{ tarea.observacion }}</td>
+                    <td>{{ tarea.unidadtrabajo }}</td>
+                    <td>{{ tarea.solicitante }}</td>
+                    <td>{{ tarea.encargado }}</td>
+                    <td> <a href="/editartarea/{{tarea.id}}" class="btn btn-primary">Editar</a> </td>
+                    <td><a href="/eliminartarea/{{tarea.id}}" class="btn btn-danger">Eliminar</a> </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</body>
+
 {% endblock %}

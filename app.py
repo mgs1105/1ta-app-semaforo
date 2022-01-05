@@ -181,7 +181,7 @@ def crearunidadtrabajo():
                 mayor = unidad['id'] if unidad['id'] > mayor else mayor
         
         id = mayor + 1
-        nombre = request.form['nombre']
+        nombre = request.form['nombre'].capitalize()
         sql = "insert into unidadtrabajo (id, nombre) values (%s, %s)"
         values = (id, nombre)
         cursor.execute(sql, values)

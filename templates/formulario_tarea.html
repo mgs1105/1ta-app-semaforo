@@ -20,10 +20,19 @@
 {% endwith %}
 
 <style>
+h3 {
+    margin-top: 10px;
+}
+
+#contenedor{
+    margin-left: auto;
+    margin-right: auto;
+    margin-bottom: 50px;
+    margin-top: 10px;
+}
 form{
     content: center;
-    margin-left: 200px;
-    margin-bottom: 50px;
+    /* margin-left: 200px; */
     background-color: #71A5DE;
     text-decoration: white;
     text-align: center;
@@ -32,13 +41,15 @@ form{
     margin-top: 20px;
     background:#143179 ;
 }
-
+label {
+    margin: 5px 0;
+}
 </style>
 
 <body onload="brython()" id="bodi">
-<div class="container" id="contenedor">
     <h3>Crear tarea</h3>
-    <div class="abs-center col-md-10">
+<div class="container" id="contenedor">
+    <div class="abs-center col-md-12">
     <form method="post" name="f1" class="border p-5 form">
         <div class="form-group">
             <label for="titulo" style="color:black">Titulo</label>
