@@ -9,19 +9,126 @@
 {% with mensajes = get_flashed_messages() %}
 {% if mensajes %}
 {% for m in mensajes %}
-<div class="alert alert-primary alert-dismissible fade show" role="alert">
-    <p> {{m}}</p>
-    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-  </div>
+
+{% if m == '¡Personal agregado con exito!' or m == '¡Personal actualizado con exito!' %}
+
+<script>
+    Swal.fire ({
+        position: 'center',
+        icon: 'success',
+        text: "{{m}}",
+        
+        showConfirmButton: true,
+        confirmButtonColor: '#3E60E9',
+        confirmButtonAriaLabel: 'Ok',
+        
+        
+        allowOutsideClick: false,
+        allowEscapeKey: false,
+        allowEnterKey: false,
+        stopKeydownPropagation: false,
+    })
+    </script>
+
+{% elif m == 'El personal que se intenta agregar ya existe' or m == 'El rut no es valido' or m == 'Los password no coinciden' %}
+
+<script>
+    Swal.fire ({
+        position: 'center',
+        icon: 'error',
+        text: "{{m}}",
+        
+        showConfirmButton: true,
+        confirmButtonColor: '#3E60E9',
+        confirmButtonAriaLabel: 'Ok',
+        
+        
+        allowOutsideClick: false,
+        allowEscapeKey: false,
+        allowEnterKey: false,
+        stopKeydownPropagation: false,
+    })
+</script>
+
+
+{% else %}
+
+<script>
+
+    Swal.fire ({
+        position: 'center',
+        icon: 'question',
+        text: "¿Seguro que desea eliminar a {{nom}}?",
+    
+        // boton eliminar
+        showConfirmButton: true,
+        confirmButtonColor: '#df4759',
+        confirmButtonAriaLabel: 'Eliminar',
+        confirmButtonText: 'Eliminar',
+    
+        // boton volver
+        showCancelButton: true,
+        cancelButtonColor: '#24a0ed',
+    
+        //condiciones de la alerta (no se cierra al hacer click en otro lugar que no sean los botones)
+        allowOutsideClick: false,
+        allowEscapeKey: false,
+        allowEnterKey: false,
+        stopKeydownPropagation: false,
+    
+    }).then( (result) => {
+        if (result.isConfirmed) {
+            $.ajax({
+                method: 'POST',
+                dataType: 'json',
+                url: "/eliminarpersonal/{{m}}",
+            });
+            Swal.fire({
+                position: 'center',
+                icon: 'success',
+                text: '{{nom}} ha sido eliminado',
+    
+                showConfirmButton: true,
+                confirmButtonColor: '#3E60E9',
+                confirmButtonAriaLabel: 'volver',
+                confirmButtonText: 'volver',
+    
+                allowOutsideClick: false,
+                allowEscapeKey: false,
+                allowEnterKey: false,
+                stopKeydownPropagation: false,
+            }).then(( isConfirmed) => {
+                window.location.href = '/personal';
+            })
+        } else {
+            window.location.href = '/personal';
+        }
+    })
+    </script>
+
+
+{%  endif %}
 {% endfor %}
 {% endif %}
 {% endwith %}
 
 <style>
-#carta{
-    margin: 20px auto;
+h3 {
+    margin-top: 20px;
 }
-select, #btn-personal{
+#contenedor{
+    margin-left: auto;
+    margin-right: auto;
+    margin-bottom: 50px;
+    margin-top: 10px;
+}
+form{
+    content: center;
+    background-color: #71A5DE;
+    text-decoration: white;
+    text-align: center;
+}
+select, #btn-personal {
     padding: 1px 10px;
 }
 #btn-personal{
@@ -29,16 +136,17 @@ select, #btn-personal{
     color: white;
     text-align: center;
     border-radius: 5px;
-    padding: 0 15px;
+    margin-top: 30px;
 }
-
-#tabla-tareas{
+#form-rec{
     margin-left: auto;
     margin-right: auto;
-    min-height: .01%;
-    overflow-x: auto;
-    width: 100%;
+    margin-bottom: 10px;
 }
+label{
+    margin:10px 0;
+}
+
 @media (max-width: 1350px) {
     #tabla-tareas{
         width: 100%;
@@ -50,24 +158,42 @@ select, #btn-personal{
 </style>
 
 <body onload="brython()">
+
     <h3>Administrar personal</h3>
-    <div class="container" id="carta">
-        <form action="{{url_for('crearpersonal')}}" method="post" id="per">
-            <label for="nombre">Nombre</label>
-            <input name="nombre" id="nombre" type="text" onkeypress='return verificar_nombre(event)' required/>
-            <label for="apellido">Apellido</label>
-            <input name="apellido" id="apellido" type="text" pattern="[a-zA-Z]" required/>
-            <label for="rut">Rut</label>
-            <input name="rut" id="rut" placeholder="Sin puntos" maxlength="8" onkeypress='return validarNum(event)' required/> -
-            <input type="text" name="digito" id="digito" maxlength="1" width="1px" placeholder="digito verificador" onkeypress='return verificar(event)' required/> 
-            <label for="unidadtrabajo">Unidad de trabajo</label>
-            <select name="unidadtrabajo">
-                {% for unidad in data %}
-                <option value="{{unidad.nombre}}">{{ unidad.nombre }}</option>
-                {% endfor %}
-            </select>
-            <input type="submit" value="registrar" id="btn-personal" onclick="verificar()"/>
-        </form>
+    <div class="container" id="contenedor">
+        <div class="abs-center col-md-8 col-xl-7" id="form-rec">
+            <form action="{{url_for('crearpersonal')}}" method="post" name="f1" class="border p-5 form">
+                <div class="form-group">
+                    <label for="nombre" style="color:black">Nombre</label>
+                    <input name="nombre" id="nombre" class="form-control" type="text" style="color:black" onkeypress='return verificar_nombre(event)' required/>
+                </div>
+                <div class="form-group">
+                    <label for="apellido" style="color:black">Apellido</label>
+                    <input name="apellido" id="apellido" type="text" class="form-control" onkeypress='return verificar_nombre(event)' required/>
+                </div>
+                <div class="form-group">
+                    <label for="rut" style="color: black;"> Rut </label>
+                    <input name="rut" id="rut" class="form-control" maxlength="10" type="text" style="color: black;" placeholder="Sin puntos y con guíon" onkeypress='return verificar(event)' required/>
+                </div>
+                <div class="form-group">
+                    <label for="password" style="color:black">Password</label>
+                    <input name="password" id="password" class="form-control" type="text" minlength="5" placeholder="minimo 5 caracteres" required/>
+                </div>
+                <div class="form-group">
+                    <label for="repetir-password" style="color:black">Repetir password</label>
+                    <input name="repetir-password" id="repetir-password" class="form-control" type="password" required/>
+                </div>
+                <div class="form-group">
+                    <label for="unidadtrabajo" style="color:black">Unidad de trabajo</label>
+                    <select name="unidadtrabajo" class="form-control">
+                        {% for unidad in data %}
+                        <option value="{{unidad.nombre}}">{{ unidad.nombre }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <input type="submit" value="registrar" id="btn-personal" onclick="verificar()"/>
+            </form>
+        </div>
     </div>
 
     <div id="tabla-tareas" class="container">
@@ -85,30 +211,24 @@ select, #btn-personal{
             {% for personal in data2 %}
             <tbody>
                 <tr>
+
                     <td>{{ personal.nombre }}</td>
                     <td>{{ personal.apellido }}</td>
                     <td>{{ personal.rut }}</td>
                     <td>{{ personal.unidadtrabajo }}</td>
                     <td> <a href="/editarpersonal/{{personal.id}}" class="btn btn-primary">Editar</a> </td>
-                    <td> <a href="/eliminarpersonal/{{personal.id}}" class="btn btn-danger">Eliminar</a> </td>
+                    <td> <a href="/alertaeliminar/{{personal.id}}" class="btn btn-danger">Eliminar</a> </td>
                 </tr>    
             </tbody>
             {% endfor %}
         </table>
     </div>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </body>
 
 <script>
-function validarNum(event) {
-    if (event.charCode >= 48 && event.charCode <= 57){
-        return true;
-    } else {
-        return false;
-    }
-}
-
 function verificar(event) {
-    if (event.charCode >= 48 && event.charCode <= 57 || event.charCode == 107){
+    if (event.charCode >= 48 && event.charCode <= 57 || event.charCode == 107 || event.charCode == 45 ){
         return true;
     } else {
         return false;
@@ -116,13 +236,15 @@ function verificar(event) {
 }
 
 function verificar_nombre(event) {
-    if (event.charCode >= 65 && event.charCode <= 90 || event.charCode >= 97 && event.charCode <= 122) {
-        return true;
+
+    if (event.charCode >= 107 && event.charCode <= 90 || event.charCode >= 97 && event.charCode <= 122 || event.charCode == 241 || event.charCode == 209
+        || event.charCode == 225 || event.charCode == 233 || event.charCode == 237 || event.charCode == 243 || event.charCode == 250) {
+            return true;
     } else {
         return false;
     }
-
 }
+
 </script>
 
 {% endblock %}

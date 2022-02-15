@@ -1,37 +1,15 @@
-{% extends 'base.html' %}
+{% extends 'base_usuario.html' %}
 
 {% block header %}
-<h1>{% block title %} Lista de tareas {% endblock %}</h1>
+<h1>{% block title %} Bienvenido! {% endblock %}</h1>
 {% endblock %}
-<script src="https://cdn.jsdelivr.net/npm/brython@3/brython.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/brython@3/brython_stdlib.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/vue/3.0.2/vue.global.prod.js"></script>
+
 {% block content %}
 
 {% with mensajes = get_flashed_messages() %}
 {% if mensajes %}
 {% for m in mensajes %}
-{% if m == '¡Tarea creada con exito!' or m == '¡Tarea actualizada con exito!' %}
-
-<script>
-    Swal.fire ({
-        position: 'center',
-        icon: 'success',
-        text: "{{m}}",
-        
-        showConfirmButton: true,
-        confirmButtonColor: '#3E60E9',
-        confirmButtonAriaLabel: 'Ok',
-        
-        
-        allowOutsideClick: false,
-        allowEscapeKey: false,
-        allowEnterKey: false,
-        stopKeydownPropagation: false,
-    })
-</script>
-
-{% elif m == '¿Seguro que desea cerrar sesion?' %}
+{% if m == '¿Seguro que desea cerrar sesion?' %}
 
 <script>
     Swal.fire({
@@ -80,64 +58,64 @@
                 window.location.href = '/';
             })
         } else {
-            window.location.href = '/listatarea';
+            window.location.href = '/usuario_lista';
         }
     })
 </script>
 
-
 {% else %}
 
 <script>
+
 Swal.fire ({
     position: 'center',
     icon: 'question',
     text: "¿Seguro desea eliminar la tarea con nombre '{{titulo}}' ?",
-
+    
     // boton eliminar
     showConfirmButton: true,
     confirmButtonColor: '#df4759',
     confirmButtonAriaLabel: 'Eliminar',
     confirmButtonText: 'Eliminar',
-
+    
     // boton volver
     showCancelButton: true,
     cancelButtonColor: '#24a0ed',
-
+    
     //condiciones de la alerta (no se cierra al hacer click en otro lugar que no sean los botones)
     allowOutsideClick: false,
     allowEscapeKey: false,
     allowEnterKey: false,
     stopKeydownPropagation: false,
-
+    
 }).then((result) => {
     if (result.isConfirmed) {
         $.ajax({
             method: 'POST',
-            url: "/eliminartarea/{{m}}",
+            url: "/usuario_eliminartarea/{{m}}",
         });
         Swal.fire({
             position: 'center',
             icon: 'success',
             text: "La tarea con titulo '{{titulo}}' ha sido eliminada",
-
+    
             showConfirmButton: true,
             confirmButtonColor: '#3E60E9',
             confirmButtonAriaLabel: 'volver',
             confirmButtonText: 'volver',
-
+    
             allowOutsideClick: false,
             allowEscapeKey: false,
             allowEnterKey: false,
             stopKeydownPropagation: false,
         }).then((isConfirmed) => {
-            window.location.href = '/listatarea';
+            window.location.href = '/usuario_lista';
         })
     } else {
-        window.location.href = '/listatarea';
+        window.location.href = '/usuario_lista';
     }
 })
-
+    
 </script>
 
 {% endif %}
@@ -146,7 +124,14 @@ Swal.fire ({
 {% endwith %}
 
 <style>
-
+#filtrar-estado{
+    text-align: center;
+    padding-top: 10px;
+    padding-bottom: 30px;
+}
+#opciones{
+    padding: 1px 15px;
+}
 #tabla-tareas{
     margin-left: auto;
     margin-right: auto;
@@ -154,7 +139,14 @@ Swal.fire ({
     overflow-x: auto;
     width: 100%;
 }
-#eliminar {
+#btn{
+    background-color: #2D219B;
+    color: white;
+    border-radius: 5px;
+    margin-left: 10px;
+    padding: 0 20px;
+}
+#eliminar{
     background-color: red;
     color: white;
     margin-top: 5px;
@@ -162,26 +154,10 @@ Swal.fire ({
     border-radius: 3px;
     text-transform: uppercase;
     text-decoration: none;
-    border-radius: 5px;
 }
-#editar {
-    background-color: blue;
-    color: white;
-    padding: 5px 10px;
-    border-radius: 3px;
-    text-transform: uppercase;
-    text-decoration: none;
-    border-radius: 5px;
-    margin-top: 5px; 
+#botones{
+    padding: 10px
 }
-#botones {
-    padding: 10px;
-}
-#tabla-colores{
-    display: inline-block;
-    
-}
-
 @media (max-width: 1350px) {
     #tabla-tareas{
         width: 100%;
@@ -191,14 +167,8 @@ Swal.fire ({
     }
 }
 
-@media (max-width: 1000px) {
-    #tabla-colores {
-        table-layout: fixed;
-        width: 90%;
-    }
-}
+/*-------------------------- LOADING ------------------------*/
 
-/* ---------------- LOADING ---------------- */
 #contenedor_carga{
     background-color: rgba(250, 250, 250, 0.9);
     height: 100%;
@@ -211,7 +181,7 @@ Swal.fire ({
     visibility: hidden;
     opacity: 0;
 }
-
+        
 #carga{
     border: 15px solid #ccc;
     border-top-color: #2c75dc;
@@ -219,7 +189,7 @@ Swal.fire ({
     height: 100px;
     width: 100px;
     border-radius: 100%;
-    
+            
     position: absolute;
     top: 0;
     left: 0;
@@ -230,55 +200,50 @@ Swal.fire ({
     -o-animation: girar 1.5s linear infinite;
     animation: girar 1.5s linear infinite;
 }
-
+        
 @keyframes girar {
     from { transform: rotate(0deg); }
     to { transform: rotate(360deg); }
-}
+}    
 </style>
 
+<!------------------- LOADING --------------->
 <div id="contenedor_carga">
     <div id="carga"></div>
 </div>
 
-<body onload="brython()">  
+
+<body onload="brython()" id="bodi">
     <h3>Lista de tareas</h3>
 
     <div class="container">
-        <div id="boton-select">
-            <b> <label>Filtrar tareas:</label> </b>
-            <select name="filtrartarea" id="filtrartarea" onchange="loading(this)" style="color:black">
-                <option value="total">Total de tareas</option>
-                <option value="Ingresada">Tareas ingresadas</option>
-                <option value="En desarrollo">Tareas en desarrollo</option>
-                <option value="Completa">Tareas completas</option>
-                <option value="Incompleta">Tareas incompletas</option>
-            </select>
-        </div>
-        <div id="tabla-colores">    
-            <table id="tabla-colores" class="table-striped bg-white table-sm center">
-                <tr>
-                    <td>Ingresada
-                        <p style="background: #E6E3E3; border: 2px solid #E6E3E3;  padding: 15px; border-radius: 6px;"></p>
-                    </td>
-                    <td>En desarrollo 
-                        <p style="background: #E4F416; border: 2px solid #E4F416;  padding: 15px; border-radius: 6px;"></p>
-                    </td>
-                    <td>Completa
-                        <p style="background: #43E72F; border: 2px solid #43E72F;  padding: 15px; border-radius: 6px;"></p>
-                    </td>
-                    <td>Incompleta
-                        <p style="background: #E90F0F; border: 2px solid #E90F0F;  padding: 15px; border-radius: 6px;"></p>
-                    </td>
-                </tr>
-            </table>
-        </div>  
+        <select name="filtrartarea" id="filtrartarea" onchange="loading(this)" style="color:black">
+            <option value="total">Total de tareas</option>
+            <option value="Completa">Tareas completas</option>
+            <option value="Incompleta">Tareas incompletas</option>
+            <option value="En desarrollo">Tareas en desarrollo</option>
+            <option value="Ingresada">Tareas ingresadas</option>
+        </select>
+        <table class="table-striped bg-white table-sm">
+            <tr>
+                <td>Ingresada
+                    <p style="background: #E6E3E3; border: 2px solid #E6E3E3;  padding: 15px; border-radius: 6px;"></p>
+                </td>
+                <td>En desarrollo 
+                    <p style="background: #E4F416; border: 2px solid #E4F416;  padding: 15px; border-radius: 6px;"></p>
+                </td>
+                <td>Completa
+                    <p style="background: #43E72F; border: 2px solid #43E72F;  padding: 15px; border-radius: 6px;"></p>
+                </td>
+                <td>Incompleta
+                    <p style="background: #E90F0F; border: 2px solid #E90F0F;  padding: 15px; border-radius: 6px;"></p>
+                </td>
+            </tr>
+        </table>
     </div>
 
-
-
     <div id="tabla-tareas" class="container">
-        <table id="tabla_tareas" class="table table-striped table-bordered bg-white table-sm">
+        <table class="table table-striped table-bordered bg-white table-sm">
             <thead class="thead-primary">
                 <tr class="thead-primary">
                     <th class="">Indicador de estado</th>
@@ -291,14 +256,13 @@ Swal.fire ({
                     <th class="">Unidad de trabajo</th>
                     <th class="">Solicitante</th>
                     <th class="">Encargado</th>
-                    <th class="">Actualizar</th>
                     <th class="">Eliminar</th>
                 </tr>
             </thead>
             <tbody id="cuerpo_tabla">
-            {% for tarea in data %}
+                {% for tarea in data %}
                 <tr>
-                    <td id="indicador">  
+                    <td>
                         {% if tarea.estado == 'Ingresada' %}
                         <p style="background: #E6E3E3; border: 2px solid #E6E3E3;  padding: 15px; border-radius: 6px;"></p>
                         {% elif tarea.estado == 'En desarrollo' %}
@@ -307,30 +271,23 @@ Swal.fire ({
                         <p style="background: #43E72F; border: 2px solid #43E72F;  padding: 15px; border-radius: 6px;"></p>
                         {% else %}
                         <p style="background: #E90F0F; border: 2px solid #E90F0F;  padding:15px; border-radius: 6px;"></p>
-                        {% endif %}
+                        {% endif %} 
                     </td>
-                    <td id="titulo">{{ tarea.titulo }}</td>
-                    <td id="detalle">{{ tarea.detalle }}</td>
-                    <td id="entrada">{{ tarea.fechaentrada }}</td>
-                    <td id="salida"> {{ tarea.fechasalida }}</td>
-                    <td id="estado">{{ tarea.estado }}</td>
-                    <td id="observacion">{{ tarea.observacion }}</td>
-                    <td id="unidad">{{ tarea.unidadtrabajo }}</td>
-                    <td id="solicitante">{{ tarea.solicitante }}</td>
-                    <td id="encargado">{{ tarea.encargado }}</td>
-                    <td id="botones"> <a id="editar" href="/editartarea/{{tarea.id}}">Editar</a> </td>
-                    <td id="botones"> <a id="eliminar" href="/alerta_eliminar_tarea/{{tarea.id}}">Eliminar</a> </td>
+                    <td>{{ tarea.titulo }}</td>
+                    <td>{{ tarea.detalle }}</td>
+                    <td>{{ tarea.fechaentrada }}</td>
+                    <td> {{ tarea.fechasalida }}</td>
+                    <td>{{ tarea.estado }}</td>
+                    <td>{{ tarea.observacion }}</td>
+                    <td>{{ tarea.unidadtrabajo }}</td>
+                    <td>{{ tarea.solicitante }}</td>
+                    <td>{{ tarea.encargado }}</td>
+                    <td id="botones"><a id="eliminar" href="/usuario_alerta_eliminar_tarea/{{tarea.id}}">Eliminar</a> </td>
                 </tr>
-            {% endfor %}
+                {% endfor %}
             </tbody>
-        </table> <br>
+        </table>
     </div>
-    
-
-
-    
-<script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-
 
 
 <script>
@@ -340,14 +297,14 @@ Swal.fire ({
         contenedor.style.opacity = '1';
         $.ajax({
             method: 'POST',
-            url: "/filtrodinamico",
+            url: "/filtro_usuario",
             data: {"opcion": opcion.value},
             success: function(result) {
                 $("#cuerpo_tabla").html("");
                 for (var i = 0; i < result.length; i++) {
 
                     var indicar_color;
-                    
+
                     switch(result[i].estado) {
                         case "En desarrollo":
                             indicar_color = `<p style="background: #E4F416; border: 2px solid #E4F416;  padding: 15px; border-radius: 6px;"></p>`;
@@ -363,7 +320,7 @@ Swal.fire ({
                     }
                     
                     var entrada = result[i].fechaentrada.substring(5, 16);
-                    
+
                     var salida;
                     if (result[i].fechasalida == null) {
                         salida = ' ';
@@ -371,7 +328,6 @@ Swal.fire ({
                         salida = result[i].fechasalida.substring(5, 16)
                     }
 
-                    var editar = `<a id="editar" href=/editartarea/`+ result[i].id + `> Editar</a>`;
                     var eliminar = `<a id="eliminar" href=/alerta_eliminar_tarea/` + result[i].id + ` >Eliminar</a>`;
                     
                     var tr = `<tr>
@@ -385,23 +341,24 @@ Swal.fire ({
                     <td>`+ result[i].unidadtrabajo +`</td>     
                     <td>`+ result[i].solicitante +`</td>
                     <td>`+ result[i].encargado +`</td>
-                    <td>`+ editar +`</td>
                     <td>`+ eliminar +`</td>
                     </tr>`;
                     $("#cuerpo_tabla").append(tr)
                 }
                 contenedor.style.visibility = 'hidden';
-            }
+            } 
         });
     }
 </script>
 
-<!-- <script type="text/python" id="tabla_tareas_dinamicas">
+
+
+<!-- <script type="text/python" id="tabla_tareas_dinamicas_ususario">
 from browser import document, ajax, html, console
-from browser.html import TABLE, TR, TH, TD, TBODY, P, A
+from browser.html import TABLE, TR, TH, TD, TBODY, P ,A
 import json
 
-document['filtrartarea'].bind('click', lambda ev:filtro_dinamico('/filtrodinamico'))
+document['filtrartarea'].bind('click', lambda ev:filtro_dinamico('/filtro_usuario'))
 
 def filtro_dinamico(url):
     req = ajax.ajax()
@@ -420,7 +377,6 @@ def on_post_complete(req):
 
         i = 0
         while i < len(data):
-
             if data[i]['estado'] == 'Ingresada':
                 color = P(style="background: #E6E3E3; border: 2px solid #E6E3E3;  padding: 15px; border-radius: 6px;")
             elif data[i]['estado'] == 'En desarrollo':
@@ -428,31 +384,29 @@ def on_post_complete(req):
             elif data[i]['estado'] == 'Completa':
                 color = P(style="background: #43E72F; border: 2px solid #43E72F;  padding: 15px; border-radius: 6px;")
             else:
-                color = P(style="background: #E90F0F; border: 2px solid #E90F0F;  padding:15px; border-radius: 6px;")
+                color = P(style="background: #E90F0F; border: 2px solid #E90F0F;  padding:15px; border-radius: 6px;")            
 
             entrada = data[i]['fechaentrada'][5:16]
-
             if data[i]['fechasalida'] == None:
                 salida = ''
             else:
                 salida = data[i]['fechasalida'][5:16]
-
-            id = str(data[i]['id'])
-            editar = html.A("Editar", style="background-color: blue; color: white; padding: 5px 10px; border-radius: 3px; text-transform: uppercase; text-decoration: none;", href="/editartarea/" + id )
-            eliminar = html.A("Eliminar", style="background-color: red; color: white; margin-top: 5px; padding: 5px 10px; border-radius: 3px; text-transform: uppercase; text-decoration: none;", href="/alerta_eliminar_tarea/" + id)
-
             
+            id = str(data[i]['id'])
+            eliminar = html.A("Eliminar", style="background-color: red; color: white; margin-top: 5px; padding: 5px 10px; border-radius: 3px; text-transform: uppercase; text-decoration: none;", href="/usuario_alerta_eliminar_tarea/" + id)    
+
             tabla <= TR(TD(color) + TD(data[i]['titulo']) + TD(data[i]['detalle']) + TD(entrada ) 
-                        + TD(salida) + TD(data[i]['estado']) + TD(data[i]['observacion']) + TD(data[i]['unidadtrabajo']) 
-                        + TD(data[i]['solicitante']) + TD(data[i]['encargado']) + TD(editar, style="padding: 10px;") + TD(eliminar, style="padding: 10px;")) 
+                    + TD(salida) + TD(data[i]['estado']) + TD(data[i]['observacion']) + TD(data[i]['unidadtrabajo']) 
+                    + TD(data[i]['solicitante']) + TD(data[i]['encargado']) + TD(eliminar, style="padding: 10px;")) 
             
             i += 1
-
+    
     else:
-        document['tabla-tareas'].html = "error "+req.text    
+        document['tabla-tareas'].html = "error" +req.text
 
 </script> -->
-    
+
+
 </body>
 
-{% endblock %}
+{% endblock%}

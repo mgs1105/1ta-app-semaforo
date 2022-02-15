@@ -9,10 +9,101 @@
 {% with mensajes = get_flashed_messages() %}
 {% if mensajes %}
 {% for m in mensajes %}
-<div class="alert alert-primary alert-dismissible fade show" role="alert">
-    <p> {{m}}</p>
-    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-  </div>
+{% if m ==  'La unidad de trabajo ya existe' or m == 'No se puede eliminar la unidad de trabajo, existe personal asociado a ella' %}
+
+<script>
+    Swal.fire({
+        position: 'center',
+        icon: 'error',
+        text: '{{m}}',
+
+        showConfirmButton: true,
+        confirmButtonColor: '#3E60E9',
+        confirmButtonAriaLabel: 'ok',
+
+        allowOutsideClick: false,
+        allowEscapeKey: false,
+        allowEnterKey: false,
+        stopKeydownPropagation: false,
+    })
+</script>
+
+{% elif m == '¡Unidad de trabajo creada con exito!' %}
+
+<script>
+    Swal.fire({
+        position: 'center',
+        icon: 'success',
+        text: '{{m}}',
+
+        showConfirmButton: true,
+        confirmButtonColor: '#3E60E9',
+        confirmButtonAriaLabel: 'ok',
+
+        allowOutsideClick: false,
+        allowEscapeKey: false,
+        allowEnterKey: false,
+        stopKeydownPropagation: false,
+    })
+</script>
+
+{% else %}
+
+<script>
+    Swal.fire({
+        position: 'center',
+        icon: 'question',
+        text: "Seguro que desea eliminar la unidad de {{nombre}}?",
+
+        //boton eliminar
+        showConfirmButton: true,
+        confirmButtonColor: '#df4759',
+        confirmButtonAriaLabel: 'Eliminar',
+        confirmButtonText: 'Eliminar',
+
+        //boton volver
+        showCancelButton: true,
+        cancelButtonColor: '#24A0ED',
+
+        //Condicion de la alerta (no se cierra al hacer click en otro lugar que no sean los botones(solo si todos estan en false))
+        allowOutsideClick: false,
+        allowEscapeKey: false,
+        allowEnterKey: false,
+        stopKeydownPropagation: false,
+
+
+    }).then((result) => {
+        if (result.isConfirmed) {
+            $.ajax({
+                method: 'POST',
+                url: '/eliminarunidad/{{m}}',
+            });
+            Swal.fire({
+                position: 'center',
+                icon: 'success',
+                text: 'La unidad {{nombre}} ha sido eliminada',
+
+                showConfirmButton: true,
+                confirmButtonColor: '#3E60E9',
+                confirmButtonAriaLabel: 'volver',
+                confirmButtonText: 'volver',
+
+                allowOutsideClick: false,
+                allowEscapeKey: false,
+                allowEnterKey: false,
+                stopKeydownPropagation: false,
+            }).then((isConfirmed) => {
+                window.location.href = '/unidadtrabajo';
+            })
+
+        } else {
+            window.location.href = '/unidadtrabajo';
+        }
+    })
+</script>
+
+
+{% endif %}
 {% endfor %}
 {% endif %}
 {% endwith %}
@@ -54,13 +145,13 @@ form{
             <tr>
                 <th>Unidades de trabajo</th>
                 <th>Eliminar</th>
-            </tr>    
+            </tr>
         </thead>
         <tbody>
             {% for unidad in data %}
             <tr>
                 <td>{{ unidad.nombre }}</td>
-                <td> <a href="/eliminarunidad/{{unidad.id}}" class="btn btn-danger">Eliminar</a> </td>
+                <td> <a href="/buscar_unidad/{{unidad.id}}" class="btn btn-danger">Eliminar</a> </td>
             </tr>    
             {% endfor %}
         </tbody>

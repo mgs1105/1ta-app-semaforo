@@ -1,73 +1,105 @@
 {% extends 'base-editar.html' %}
 
-<link rel="stylesheet" href="https://bootswatch.com/4/materia/bootstrap.min.css">
-<link href="styles/style.css" rel="stylesheet" type="text/css">
 {% block header %}
-<h1>{% block title %} {% endblock %}</h1>
+<h1>{% block title %} Editar tarea {% endblock %}</h1>
 {% endblock %}
+<script src="https://cdn.jsdelivr.net/npm/brython@3/brython.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/brython@3/brython_stdlib.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/vue/3.0.2/vue.global.prod.js"></script>
 
 {% block content %}
 
+{% with mensajes = get_flashed_messages() %}
+{% if mensajes %}
+{% for m in mensajes %}
+{% if m == 'Los password no coinciden' %}
+
+<script>
+    Swal.fire({
+        position: 'center',
+        icon: 'error',
+        text: '{{m}}',
+
+        showConfirmButton: True,
+        confirmButtonColor: '#3E60E9',
+        confirmButtonAriaLabel: 'Ok',
+
+        allowOutSideClick: false,
+        allowEscapeKey: false,
+        allowEnterKey: false,
+        stopKeydownPropagation: false,
+    })
+</script>
+
+{% endif %}
+{% endfor %}
+{% endif %}
+{% endwith %}
+
+
 <style>
-h1 {
+h3{
     text-align: center;
-    background-color: #143179;
-    color: white;
-    margin-top: 30px;
-    margin-left: 200px; 
+    margin-top: 20px;
+    padding-top: 10px;
+    margin-bottom: 20px;
 }
-form {
-    content: center;
+#contenedor{
+    margin-left: auto;
+    margin-right: auto;
     margin-bottom: 50px;
+    margin-top: 10px;
+}
+form{
+    content: center;
     background-color: #71A5DE;
     text-decoration: white;
     text-align: center;
 }
-#navegacion {
-    background-color: #143179 ;
-
-}  
-#contenedor{
-    margin-top: 30px;
-    margin-bottom: 30xp;
-    margin-left: 250px;
+#form-rec{
+    margin-left: auto;
+    margin-right: auto;
 }
-#tribunal{
-    border-radius: 10px;
-    margin-left: 200px;
-    width: 80px;
-    height: 80px;
-
+#btn{
+    margin-top: 20px;
+    background:#143179 ;
+    padding: 5px 20px;
+}
+label {
+    margin: 5px 0;
 }
 </style>
 
-    
-<div id="navegacion" class="d-flex justify-content-center py-3 primary-color">
-    <ul class="nav nav-pills">
-        <h1>Editar Personal</h1>
-    </ul>
-    <img src="https://pbs.twimg.com/profile_images/973914604211462146/vK1Beo4p_400x400.jpg" alt="" id="tribunal">
-</div>
-
 <body onload="brython()" id="bodi">
+    <h3>Editar personal</h3>
     <div class="container" id="contenedor">
-        <div class="abs-center col-md-10">
+        <div class="abs-center col-md-8 col-xl-7" id="form-rec">
             <form action="/actualizaP/{{data.id}}" method="post" name="f1" class="border p-5 form">
                 <div class="form-group">
-                    <label for="nombre" style="color:black"> Nombre </label>
-                    <input name="nombre" id="nombre" value="{{data.nombre}}" class="form-control" style="color:black" readonly/>
+                    <b> <label for="nombre" style="color:black"> Nombre </label> </b>
+                    <label for="nombre" style="color: black;">{{data.nombre}}</label>
                 </div>
                 <div class="form-group">
-                    <label for="apellido" style="color:black"> Apellido </label>
-                    <input name="apellido" id="apellido" value="{{data.apellido}}" class="form-control" style="color:black" readonly/>
+                    <b> <label for="apellido" style="color:black"> Apellido </label> </b>
+                    <label for="apellido" style="color: black;">{{data.apellido}}</label>
                 </div>
                 <div class="form-group">
-                    <label for="rut" style="color:black"> Rut </label>
-                    <input name="rut" id="rut" value="{{data.rut}}" class="form-control" style="color:black" readonly/>
+                    <b> <label for="rut" style="color:black"> Rut </label> </b>
+                    <label for="rut" style="color: black;">{{data.rut}}</label>
                 </div>
+                <div class="form-group">
+                    <b> <label for="password" style="color:black"> Password </label> </b>
+                    <input name="password" id="password" type="password" class="form-control" style="color: black;">
+                </div>
+                <div class="form-group">
+                    <b> <label for="repetir-password" style="color:black"> Repetir password </label> </b>
+                    <input name="repetir_password" id="repetir_password" type="password" class="form-control" style="color: black;">
+                </div>
+
                 <div class="form-group" style="color:black">
-                    <label for="unidadtrabajo">Unidad de trabajo</label>
+                    <b> <label for="unidadtrabajo">Unidad de trabajo</label> </b>
                     <select name="unidadtrabajo"  class="form-control" style="color:black">
+                        <option value="{{data.unidadtrabajo}}">{{ data.unidadtrabajo }}</option>
                         {% for unidad in data2 %}
                         <option value="{{unidad.nombre}}">{{ unidad.nombre }}</option>
                         {% endfor %}
@@ -76,9 +108,10 @@ form {
                 <input type="submit" value="Editar"  id="btn" class="btn btn-primary"/>
             </form>
         </div>
+    </div>
 
-        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" 
-        integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" 
+    integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
     
 </body>
 

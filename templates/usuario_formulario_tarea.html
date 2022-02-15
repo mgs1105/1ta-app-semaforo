@@ -1,0 +1,175 @@
+{% extends 'base_usuario.html' %}
+
+{% block header %}
+<h1>{% block title %} Bienvenido! {% endblock %}</h1>
+{% endblock %}
+<script src="https://cdn.jsdelivr.net/npm/brython@3/brython.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/brython@3/brython_stdlib.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/vue/3.0.2/vue.global.prod.js"></script>
+
+{% block content %}
+
+{% with mensajes = get_flashed_messages() %}
+{% if mensajes %}
+{% for m in mensajes %}
+
+<script>
+    Swal.fire ({
+        position: 'center',
+        icon: 'success',
+        text: "{{m}}",
+        
+        showConfirmButton: true,
+        confirmButtonColor: '#3E60E9',
+        confirmButtonAriaLabel: 'Ok',
+        
+        
+        allowOutsideClick: false,
+        allowEscapeKey: false,
+        allowEnterKey: false,
+        stopKeydownPropagation: false,
+    })
+    </script>
+
+{% endfor %}
+{% endif %}
+{% endwith %}
+
+<style>
+    h3 {
+        margin-top: 10px;
+    }
+    #contenedor{
+        margin-left: auto;
+        margin-right: auto;
+        margin-bottom: 50px;
+        margin-top: 10px;
+    }
+    form{
+        content: center;
+        background-color: #71A5DE;
+        text-decoration: white;
+        text-align: center;
+    }
+    #form-rec{
+        margin-left: auto;
+        margin-right: auto;
+    }
+    #btn{
+        margin-top: 20px;
+        background:#143179 ;
+    }
+    label {
+        margin: 5px 0;
+    }
+    </style>
+
+
+<body onload="brython()" id="bodi">
+    <h3>Crear tarea</h3>
+    <div class="container" id="contenedor">
+        <div class="abs-center col-md-8 col-xl-7" id="form-rec">
+            <form method="post" name="f1" class="border p-5 form">
+                <div class="form-group">
+                    <label for="titulo" style="color:black">Titulo</label>
+                    <input name="titulo" id="titulo" class="form-control" style="color:black" required/>
+                </div>
+                <div class="form-group">
+                    <label for="detalle" style="color:black">Detalle</label>
+                    <textarea name="detalle" id="detalle" class="form-control" style="color:black" required></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="fechaentrada" style="color:black">Fecha de entrada</label>
+                    <input name="fechaentrada" id="fechaentrada" type="date" class="form-control" style="color:black" required/>
+                </div>
+                <!-- <div class="form-group">
+                    <label for="unidadtrabajo" style="color:black">Unidad de trabajo</label>
+                    <select name="unidadtrabajo" id="unidadtrabajo" class="form-control" style="color:black">
+                        {% for unidad in data %}
+                        <option value="{{unidad.nombre}}">{{ unidad.nombre }}</option>
+                        {% endfor %}
+                    </select>
+                </div> -->
+                <!-- <div class="form-group">
+                    <label for="solicitante" style="color:black">solicitante</label>
+                    <select name="solicitante" id="solicitante" class="form-control" style="color:black" required>
+                        <option value=""></option>
+                    </select>
+                </div> -->
+                <input type="submit" value="registrar" id="btn" class="btn btn-primary">
+            </form>
+        </div>
+    </div>
+
+<!-- <script type="text/python" id="anidar_select">
+from browser import document, ajax, html, console
+import json
+    
+def on_post_complete(req):
+    if req.status==200 or req.status == 0:
+        data = json.loads(req.responseText)
+        i = 0
+        personal = []
+        personal.append('Seleccione...')
+        while i < len(data):
+            personal.append(data[i]['nombre'] + ' ' + data[i]['apellido'])
+            i += 1
+        sel = document['solicitante']
+
+        if sel == None:
+            for x in personal:
+                sel <= (html.OPTION(x, value="{{x}}"))
+        else:
+            sel.html = ""
+            for x in personal:
+                sel <= (html.OPTION(x, value="{{x}}"))
+
+    else:
+        document['solicitante'].html = "error "+req.text
+
+def post(url):
+    req = ajax.ajax()    
+    unidad = document["unidadtrabajo"].value      
+    req.open('POST', url, True)
+    req.set_header('content-type', 'application/x-www-form-urlencoded')
+    req.send({"unidad":unidad})
+    req.bind('complete', on_post_complete)
+
+document['unidadtrabajo'].bind('click', lambda ev:post('/buscar'))
+</script> -->
+
+<script type="text/python" id="crear_tarea">
+from browser import document, ajax, html, console
+import json
+
+def complete_tarea(req):
+    if req.status == 200 or req.status == 0:
+        return []
+    else:
+        return []
+    
+
+def registrar_tarea(url):
+    req = ajax.ajax()
+    titulo = document['titulo'].value
+    detalle = document['detalle'].value
+    fechaentrada = document['fechaentrada'].value
+
+    req.open('POST', url, True)
+    req.set_header('content-type', 'application/x-www-form-urlencoded')
+    req.send({
+        "titulo": titulo,
+        "detalle": detalle,
+        "fechaentrada": fechaentrada,
+        "encargado": ''
+    })
+    req.close()
+    req.bind('complete', complete_tarea)
+    req.close()
+
+document['btn'].bind('click', lambda ev:registrar_tarea('/creartarea'))
+</script>
+
+</body>
+
+{% endblock %}

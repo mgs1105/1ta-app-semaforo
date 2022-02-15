@@ -1,107 +1,101 @@
 {% extends 'base-editar.html' %}
 
-<link rel="stylesheet" href="https://bootswatch.com/4/materia/bootstrap.min.css">
-<link href="styles/style.css" rel="stylesheet" type="text/css">
 {% block header %}
-<h1>{% block title %} {% endblock %}</h1>
+<h1>{% block title %} Editar tarea {% endblock %}</h1>
 {% endblock %}
+<script src="https://cdn.jsdelivr.net/npm/brython@3/brython.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/brython@3/brython_stdlib.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/vue/3.0.2/vue.global.prod.js"></script>
 
 {% block content %}
 
 <style>
-h1{
+h3{
     text-align: center;
-    background-color: #143179;
-    color: white;
-    margin-top: 30px;
-    margin-left: 250px;
-    
+    margin-top: 20px;
+    padding-top: 10px;
+    margin-bottom: 20px;
+}
+#contenedor{
+    margin-left: auto;
+    margin-right: auto;
+    margin-bottom: 50px;
+    margin-top: 10px;
 }
 form{
     content: center;
-    margin-bottom: 50px;
     background-color: #71A5DE;
     text-decoration: white;
     text-align: center;
 }
-#navegacion {
-    background-color: #143179 ;
-    }  
-#contenedor{
-    margin-top: 30px;
-    margin-bottom: 30xp;
-    margin-left: 250px;
+#btn{
+    margin-top: 20px;
+    background:#143179 ;
+    padding: 5px 20px;
 }
-#tribunal{
-    border-radius: 10px;
-    width: 80px;
-    height: 80px;
-    margin-left: 200px;
+#form-rec{
+    margin-left: auto;
+    margin-right: auto;
+}
+label {
+    margin: 5px 0;
 }
 </style>
 
-
-<div id="navegacion" class="d-flex justify-content-center py-3 primary-color">
-    <ul class="nav nav-pills">
-        <h1>Editar tarea</h1>
-    </ul>
-    <img src="https://pbs.twimg.com/profile_images/973914604211462146/vK1Beo4p_400x400.jpg" alt="" id="tribunal">
-</div>
 <body onload="brython()" id="bodi">
+    <h3>Editar tarea</h3>
     <div class="container" id="contenedor">
-        <div class="abs-center col-md-10">
-        <form action="/actualizaT/{{data.id}}" method="post" name="f1" class="border p-5 form">
-            <div class="form-group">
-                <label for="titulo" style="color:black">Titulo</label>
-                <input name="titulo" id="titulo" value="{{data.titulo}}" class="form-control" style="color:black" readonly/>
-            </div>
-            <div class="form-group">
-                <label for="detalle" style="color:black">Detalle</label>
-                <textarea name="detalle" id="detalle" class="form-control"  style="color:black" readonly>{{data.detalle}}</textarea>
-            </div>
-            <div class="form-group">
-                <label for="fechaentrada" style="color:black">Fecha de entrada</label>
-                <input name="fechaentrada" id="fechaentrada" type="date" class="form-control"  value="{{data.fechaentrada}}" style="color:black" readonly/>
-            </div>
-            <div class="form-group">
-                <label for="fechasalida" style="color:black">Fecha de termino</label>
-                <input name="fechasalida" id="fechasalida" type="date"  class="form-control" style="color:black"/>
-            </div>
-            <div class="form-group">
-                <label for="estado" style="color:black">Estado</label>
-                <select name="estado" id="estado" class="form-control" style="color:black">
-                    <option value="ingresada">Ingresada</option>
-                    <option value="en desarrollo">En desarrollo</option>
-                    <option value="completa">Completa</option>
-                    <option value="incompleta">Incompelta</option>
-                </select>
-            </div>
-            <div class="form-group">
-                <label for="observacion" style="color:black">Observacion</label>
-                <textarea name="observacion" id="observacion" class="form-control" style="color:black" required>{{data.observacion}}</textarea>
-            </div>
-            <div class="form-group">
-                <label for="unidadtrabajo"  style="color:black">Unidad de trabajo</label>
-                    <input name="unidadtrabajo" id="unidadtrabajo" value="{{data.unidadtrabajo}}"   class="form-control" style="color: black;" readonly/>
-            </div>
-            <div class="form-group">
-                <label for="solicitante" style="color:black">solicitante</label>
-                <input name="solicitante" id="solicitante" class="form-control" style="color:black"  value="{{data.solicitante}}" readonly>
-            </div>
-            <div class="form-group">
-                <label for="encargado" style="color:black">Encargado</label>
-                <select name="encargado" id="encargado" class="form-control" style="color:black">
-                    <option value="Michel Espinosa">Michel Espinosa</option>
-                    <option value="Patricio Soto">Patricio Soto</option>
-                    <option value="Michel - Patricio">Michel - Patricio</option>
-                </select>
-            </div>
-            <input type="submit" value="registrar" id="btn" class="btn btn-primary">
-          </form>
+        <div class="abs-center col-md-8 col-xl-7" id="form-rec">
+            <form action="/actualizaT/{{data.id}}" method="post" name="f1" class="border p-5 form">
+                <div class="form-group">
+                   <b> <label for="titulo" style="color:black" id="tit">Titulo: </label> </b>
+                    <label for="titulo" style="color:black">{{data.titulo}}</label>
+                </div>
+                <div class="form-group">
+                    <b>  <label for="detalle" style="color:black" id="tit">Detalle: </label> </b>
+                    <label for="detalle" style="color:black">{{data.detalle}}</label>
+                </div>
+                <div class="form-group">
+                    <b> <label for="fechaentrada" style="color:black" id="tit">Fecha de entrada: </label> </b>
+                    <label name="fechaentrada" id="fechaentrada" style="color:black">{{data.fechaentrada}}</label>
+                </div>
+                <div class="form-group">
+                    <label for="fechasalida" style="color:black">Fecha de termino</label>
+                    <input name="fechasalida" id="fechasalida" type="date"  class="form-control" style="color:black"/>
+                </div>
+                <div class="form-group">
+                    <label for="estado" style="color:black">Estado</label>
+                    <select name="estado" id="estado" class="form-control" style="color:black">
+                        <option value="En desarrollo">En desarrollo</option>
+                        <option value="Completa">Completa</option>
+                        <option value="Incompleta">Incompelta</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="observacion" style="color:black">Observacion</label>
+                    <textarea name="observacion" id="observacion" class="form-control" style="color:black" required>{{data.observacion}}</textarea>
+                </div>
+                <div class="form-group">
+                   <b> <label for="unidadtrabajo"  style="color:black" id="tit">Unidad de trabajo: </label> </b>
+                    <label name="unidadtrabajo" id="unidadtrabajo">{{data.unidadtrabajo}}</label>
+                </div>
+                <div class="form-group">
+                   <b> <label for="solicitante" style="color:black" id="tit">solicitante: </label> </b>
+                    <label name="solicitante" id="solicitante" style="color:black">{{data.solicitante}}</label>
+                </div>
+                <div class="form-group">
+                    <label for="encargado" style="color:black">Encargado</label>
+                    <select name="encargado" id="encargado" class="form-control" style="color:black">
+                        <option value="Michel Espinosa">Michel Espinosa</option>
+                        <option value="Patricio Soto">Patricio Soto</option>
+                        <option value="Michel - Patricio">Michel - Patricio</option>
+                    </select>
+                </div>
+                <input type="submit" value="Editar" id="btn" class="btn btn-primary">
+            </form>
         </div>
-      </div>
-
-
+    </div>
+    
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" 
     integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
 
